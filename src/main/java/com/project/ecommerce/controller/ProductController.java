@@ -1,7 +1,6 @@
 package com.project.ecommerce.controller;
 
 import com.project.ecommerce.dto.ProductCreateDTO;
-import com.project.ecommerce.enums.ProductClassification;
 import com.project.ecommerce.model.ProductModel;
 import com.project.ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -36,5 +34,18 @@ public class ProductController {
         return productService.changeProduct(productId,dto);
     }
 
+    @DeleteMapping(path = "/delete/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId){
+        return productService.deleteProduct(productId);
+    }
 
+    @GetMapping(path = "/search")
+    public ResponseEntity<List<ProductModel>> searchQueryProducts(
+            @RequestParam(required = false)String productName,
+            @RequestParam(required = false)Double maxPrice,
+            @RequestParam(required = false)Double minPrice){
+       return productService.searchQueryProducts(productName, maxPrice, minPrice);
+    }
+
+    //vou resolver essa bomba amanha, aparentemente nao ta reconhecendo a query
 }

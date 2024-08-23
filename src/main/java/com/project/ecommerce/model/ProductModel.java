@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-import java.math.BigDecimal;
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -24,7 +21,7 @@ public class ProductModel {
     private Long productId;
     private String productName;
     private String productDescription;
-    private BigDecimal productPrice;
+    private Double productPrice;
     private ProductClassification productClassification;
 
 }
