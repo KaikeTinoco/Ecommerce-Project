@@ -1,6 +1,7 @@
 package com.project.ecommerce.service;
 
 import com.project.ecommerce.dto.ProductCreateDTO;
+import com.project.ecommerce.exception.BadRequestException;
 import com.project.ecommerce.model.ProductModel;
 import com.project.ecommerce.repositories.ProductRepository;
 import com.project.ecommerce.specification.ProductSpecification;
@@ -34,8 +35,8 @@ public class ProductService {
             newProduct.setProductId(setProductID());
             productRepository.save(newProduct);
             return ResponseEntity.ok(newProduct);
-        } catch (Error erro) {
-            throw new RuntimeException("erro aconteceu, ainda não fiz o handler kkkkkk");
+        } catch (BadRequestException e) {
+            throw new BadRequestException("erro ao tentar salvar o produto, por favor contate o suporte");
         }
 
     }
@@ -73,8 +74,8 @@ public class ProductService {
             }
             return ResponseEntity.ok(product);
 
-        } catch (Exception e){
-            throw new RuntimeException("exceção rolou aqui");
+        } catch (BadRequestException e){
+            throw new BadRequestException("houve um erro ao tentar alterar o produto, por favor contate o suporte");
         }
     }
 
@@ -84,8 +85,8 @@ public class ProductService {
            ProductModel product = productRepository.findByProductId(productId).get();
            productRepository.delete(product);
            return ResponseEntity.ok("Produto deletado com sucesso!");
-       } catch (RuntimeException e) {
-           throw new RuntimeException(e);
+       } catch (BadRequestException e) {
+           throw new BadRequestException("houve um problema ao tentar deletar o produto, por favor contate o suporte");
        }
     }
 
@@ -93,25 +94,30 @@ public class ProductService {
                                                                   Double maxPrice,
                                                                   Double minPrice) {
         Specification<ProductModel> productModelSpecification;
+        try {
+            if(validParameteres(productName, maxPrice, minPrice)){
+                productModelSpecification = Specification.where(null);
+                if(productName != null && !productName.isEmpty()){
+                    productModelSpecification = productModelSpecification.and(getProductSpecificationName(productName));
+                }
+                if (maxPrice != null){
+                    productModelSpecification = productModelSpecification.and(getProductSpecificationMaxPrice(maxPrice));
+                }
+                if(minPrice != null){
+                    productModelSpecification = productModelSpecification.and(getProductSpecificationMinPrice(minPrice));
+                }
 
-        if(validParameteres(productName, maxPrice, minPrice)){
-            productModelSpecification = Specification.where(null);
-            if(productName != null && !productName.isEmpty()){
-                productModelSpecification = productModelSpecification.and(getProductSpecificationName(productName));
+
+
+                return ResponseEntity.ok(productRepository.findAll(productModelSpecification));
             }
-            if (maxPrice != null){
-                productModelSpecification = productModelSpecification.and(getProductSpecificationMaxPrice(maxPrice));
-            }
-            if(minPrice != null){
-                productModelSpecification = productModelSpecification.and(getProductSpecificationMinPrice(minPrice));
-            }
 
-
-
-            return ResponseEntity.ok(productRepository.findAll(productModelSpecification));
+            return ResponseEntity.ok(productRepository.findAll());
+        } catch (BadRequestException e) {
+            throw new BadRequestException("houve um erro ao tentar buscar o produto, por favor tente novamente");
         }
 
-        return ResponseEntity.ok(productRepository.findAll());
+
 
     }
     private boolean validParameteres(String name,
