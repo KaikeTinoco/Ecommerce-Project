@@ -1,6 +1,7 @@
 package com.project.ecommerce.controller;
 
 import com.project.ecommerce.dto.ProductCreateDTO;
+import com.project.ecommerce.enums.ProductClassification;
 import com.project.ecommerce.model.ProductModel;
 import com.project.ecommerce.service.ProductService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,6 +54,11 @@ public class ProductController implements ProductControllerOpenApi{
             @RequestParam(required = false)Double maxPrice,
             @RequestParam(required = false)Double minPrice){
        return productService.searchQueryProducts(productName, maxPrice, minPrice);
+    }
+
+    @GetMapping(path = "/categories")
+    public ResponseEntity<List<ProductModel>> searchProductsByClassification(@RequestParam ProductClassification className){
+        return productService.findProductsByCategory(className);
     }
 
 }

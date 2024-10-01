@@ -37,6 +37,17 @@ public class ProductModel {
     @NotNull(message = "productClassification não pode ser nulo!")
     private ProductClassification productClassification;
 
+    public ProductModel(Long productId,
+                        String productName,
+                        String productDescription,
+                        Double productPrice,
+                        ProductClassification productClassification) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productPrice = productPrice;
+        this.productClassification = productClassification;
+    }
 }
 
 

@@ -1,6 +1,7 @@
 package com.project.ecommerce.service;
 
 import com.project.ecommerce.dto.ProductCreateDTO;
+import com.project.ecommerce.enums.ProductClassification;
 import com.project.ecommerce.exception.BadRequestException;
 import com.project.ecommerce.model.ProductModel;
 import com.project.ecommerce.repositories.ProductRepository;
@@ -120,6 +121,20 @@ public class ProductService {
 
 
     }
+
+    public ResponseEntity<List<ProductModel>> findProductsByCategory(ProductClassification className){
+        try{
+             List<ProductModel> productsList = productRepository.findByProductClassification(className)
+                    .get();
+             return ResponseEntity.ok(productsList);
+        } catch (BadRequestException e){
+            throw new BadRequestException("Não foi possível buscar os produtos com essa classificação!");
+        }
+
+
+    }
+
+
     private boolean validParameteres(String name,
                                      Double maxPrice,
                                      Double minPrice){
